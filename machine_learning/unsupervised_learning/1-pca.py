@@ -1,27 +1,23 @@
 #!/usr/bin/env python3
-""" PCA """
-import numpy as np
+"""Module for performing PCA on tabular data."""
+from sklearn import decomposition
 
 
-def pca(X, var=0.95):
-    """ performs PCA on a dataset
-
-        - X is a numpy.ndarray of shape (n, d) where:
-            - n is the number of data points
-            - d is the number of dimensions in each point
-            - all dimensions have a mean of 0 across all data points
-        - var is the fraction of the variance that the PCA
-          transformation should maintain
-        Returns: the weights matrix, W, that maintains var fraction
-                 of X‘s original variance
-        - W is a numpy.ndarray of shape (d, nd) where nd is the new
-          dimensionality of the transformed X
+def Apply_PCA(X, n_components, random_state):
     """
-    u, s, vh = np.linalg.svd(X)
-    # accumulative sum of eigenvalues
-    cum = np.cumsum(s) / sum(s)
-    # Get indices less than variance
-    idx = np.where(cum <= var, 1, 0)
-    n = sum(idx) + 1
-    # vh Transpose is equal to W
-    return vh.T[:, :n]
+    Performs PCA on tabular data.
+
+    Args:
+        X (numpy.ndarray): Tabular data of shape (n_samples, n_features).
+        n_components (int|float|None): Number of components to keep,
+            fraction of variance to preserve, or None to keep all.
+        random_state (int): Random seed for reproducibility.
+
+    Returns:
+        numpy.ndarray: Data transformed into principal component space.
+        sklearn.decomposition.PCA: Fitted PCA instance.
+    """
+    pca = decomposition.PCA(n_components=n_components,
+                             random_state=random_state)
+    X_pca = pca.fit_transform(X)
+    return X_pca, pca
